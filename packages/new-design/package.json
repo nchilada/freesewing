@@ -1,6 +1,6 @@
 {
   "name": "@freesewing/new-design",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0-nchilada.0",
   "description": "Initializer package for a new FreeSewing design: npx @freesewing/new-design",
   "author": "Joost De Cock <joost@joost.at> (https://github.com/joostdecock)",
   "homepage": "https://freesewing.org/",
@@ -26,7 +26,6 @@
     "tips": "node ../../scripts/help.mjs",
     "cibuild_step6": "SITE=new-design/shared node ../../sites/shared/prebuild/i18n-only.mjs && cp ../../scripts/banner.mjs ./lib && node build.js"
   },
-  "peerDependencies": {},
   "dependencies": {
     "axios": "^0.27.2",
     "chalk": "^5.0.1",
@@ -36,7 +35,6 @@
     "prompts": "^2.4.2",
     "recursive-readdir": "^2.2.2"
   },
-  "devDependencies": {},
   "files": [
     "README.md",
     "package.json",

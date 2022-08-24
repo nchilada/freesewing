@@ -1,6 +1,6 @@
 {
   "name": "@freesewing/utils",
-  "version": "3.0.0-alpha.0",
+  "version": "3.0.0-nchilada.0",
   "description": "A collection of utilities shared across freesewing projects",
   "author": "Joost De Cock <joost@joost.at> (https://github.com/joostdecock)",
   "homepage": "https://freesewing.org/",
@@ -30,11 +30,9 @@
     "cibuild_step6": "node build.js"
   },
   "peerDependencies": {
-    "tlds": "^1.221.1",
-    "axios": "^0.25.0"
+    "axios": "^0.25.0",
+    "tlds": "^1.221.1"
   },
-  "dependencies": {},
-  "devDependencies": {},
   "files": [
     "backend/*",
     "camelCase/*",
