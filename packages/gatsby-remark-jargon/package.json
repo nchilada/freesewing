@@ -1,6 +1,6 @@
 {
   "name": "gatsby-remark-jargon",
-  "version": "3.0.0-nchilada.0",
+  "version": "4.0.0-nchilada.0",
   "description": "A gatsby-transformer-remark sub-plugin for jargon terms",
   "author": "Joost De Cock <joost@joost.at> (https://github.com/joostdecock)",
   "homepage": "https://freesewing.org/",
@@ -34,7 +34,7 @@
     "cibuild_step6": "node build.js"
   },
   "dependencies": {
-    "remark-jargon": "^3.0.0-nchilada.0"
+    "remark-jargon": "^4.0.0-nchilada.0"
   },
   "files": [
     "dist/*",
