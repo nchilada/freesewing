@@ -1,7 +1,7 @@
 # In the event that lint is broken in mainline (e.g. `develop`, the only mainline branch that has linting code right now),
 # this workflow is expected to pass even if lint.all.yml fails.
 
-name: ESLint Changed Files
+name: Lint Changed Files
 
 on:
   pull_request:
@@ -9,7 +9,7 @@ on:
       - develop
 
 jobs:
-  lint:
+  diff:
 
     runs-on: ubuntu-latest
 
@@ -22,10 +22,29 @@ jobs:
         uses: actions/checkout@v3
         with:
           ref: ${{ github.base_ref }}
-      - name: Checkout PR merge ref
+      - name: Fetch PR merge ref
         uses: actions/checkout@v3
         with:
           ref: ${{ github.ref }}
+      - name: Identify files that need to be linted
+        run: |
+          git diff --name-only --diff-filter=ACMRTU origin/${{ github.base_ref }}..origin/${{ github.ref }} > lintees.txt
+      - name: Upload the list of files to lint
+        uses: actions/upload-artifact@v3
+        with:
+          name: lintees
+          path: lintees.txt
+
+  install:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout PR merge ref
+        uses: actions/checkout@v3
       - name: Setup Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v3
         with:
@@ -36,17 +55,82 @@ jobs:
           CI: true
       - name: Prebuild Packages
         run: npx lerna run prebuild
+      - name: Upload lint dependencies
+        uses: actions/upload-artifact@v3
+        with:
+          name: lint-dependencies
+          path: node_modules
+
+  eslint:
+    needs: [diff, install]
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout PR merge ref
+        uses: actions/checkout@v3
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Download lint dependencies
+        uses: actions/download-artifact@v3
+        with:
+          name: lint-dependencies
+      - name: Download the list of files to lint
+        uses: actions/download-artifact@v3
+        with:
+          name: lintees
       - name: Run eslint
         run: |
-          changed_files="$(git diff --name-only origin/${{ github.base_ref }})"
-          if (( $? )); then
-            echo "Failed diff against origin/${{ github.base_ref }}"
-            exit 1
-          else
-            echo "Changed files:"
-            echo "$changed_files"
-            echo
-            echo "Running eslint"
-            echo
-            npx eslint --no-error-on-unmatched-pattern $changed_files
-          fi
+          lint_status=0
+          for file in $(cat lintees.txt); do
+            if [[ -f "$file" ]]; then
+              npx eslint --no-error-on-unmatched-pattern "$file"
+              if (($?)); then
+                lint_status=1
+              fi
+            fi
+          done
+          exit $lint_status
+
+  stylelint:
+    needs: [diff, install]
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [16.x]
+
+    steps:
+      - name: Checkout PR merge ref
+        uses: actions/checkout@v3
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-version }}
+      - name: Download lint dependencies
+        uses: actions/download-artifact@v3
+        with:
+          name: lint-dependencies
+      - name: Download the list of files to lint
+        uses: actions/download-artifact@v3
+        with:
+          name: lintees
+      - name: Run stylelint
+        run: |
+          lint_status=0
+          cat lintees.txt | while IFS= read file; do
+            if [[ -f "$file" && "$file" =~ \.txt$ ]]; then
+              npx stylelint "$file"
+              if (( $? )); then
+                lint_status=1
+              fi
+            fi
+          done
+          exit $lint_status

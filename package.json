@@ -27,10 +27,12 @@
     "build": "yarn buildall",
     "wbuild": "yarn wbuildall",
     "testall": "node scripts/testall.js",
-    "lint": "lerna run --no-bail lint -- ",
+    "lint": "yarn qa:lint",
     "qa": "yarn qa:prettier && yarn qa:lint",
     "qa:prettier": "npx prettier",
-    "qa:lint": "npx eslint",
+    "qa:lint": "yarn qa:lint:js; js_status=$?; yarn qa:lint:css; css_status=$?; (( js_status && css_status ))",
+    "qa:lint:css": "npx stylelint '**/*.css'",
+    "qa:lint:js": "npx eslint .",
     "release": "lerna exec --no-bail -- npm publish",
     "postrelease": "git add . && git commit -m ':bookmark: v$npm_package_version' && git tag -a v$npm_package_version -m ':bookmark: FreeSewing v$npm_package_version'",
     "ship": "lerna exec --no-bail -- npm publish",
@@ -56,6 +58,9 @@
   "lint-staged": {
     "*": [
       "npx prettier --write"
+    ],
+    "**/*.css": [
+      "npx stylelint"
     ]
   },
   "devDependencies": {

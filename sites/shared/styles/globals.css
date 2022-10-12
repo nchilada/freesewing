@@ -1,8 +1,11 @@
+@import './code.css';
+
+/* Style for patterns */
+@import './svg-freesewing-draft.css';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
-@import './code.css';
 
 @layer components {
   /* Applied styles for common HTML tags */
@@ -82,7 +85,6 @@
   .mdx code.hljs {
     color: inherit;
     background-color: inherit;
-    background-opacity: inherit;
   }
   .mdx table.mdx-table {
     margin: 2rem auto;
@@ -444,6 +446,12 @@
 }
 
 /* Style for navigation */
+summary {
+  cursor: pointer;
+}
+svg.details-toggle {
+  transition: all 0.2s ease-out;
+}
 details {
   user-select: none;
 }
@@ -457,12 +465,6 @@ details[open] > summary > svg.details-toggle {
 }
 details[open] summary ~ * {
   animation: ease-opacity-t-b 0.5s ease;
-}
-summary {
-  cursor: pointer;
-}
-svg.details-toggle {
-  transition: all 0.2s ease-out;
 }
 
 /* TO JE TO - TO JE TAJ */
@@ -489,8 +491,6 @@ input[type='range']::-ms-fill-upper {
 input[type='range']:focus::-ms-fill-upper {
   background: #367ebd;
 }
-/* Style for patterns */
-@import './svg-freesewing-draft.css';
 
 /* Style for jargon terms */
 .jargon-term {
