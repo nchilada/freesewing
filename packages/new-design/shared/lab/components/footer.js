@@ -1,7 +1,4 @@
 import Logo from 'shared/components/logos/freesewing.js'
-import OsiLogo from 'shared/components/logos/osi.js'
-import CreativeCommonsLogo from 'shared/components/logos/cc.js'
-import CcByLogo from 'shared/components/logos/cc-by.js'
 import { useTranslation } from 'next-i18next'
 import Ribbon from 'shared/components/ribbon.js'
 import Link from 'next/link'

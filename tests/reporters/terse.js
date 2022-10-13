@@ -1,4 +1,4 @@
-const Mocha = require('mocha')
+import Mocha from 'mocha'
 const { EVENT_TEST_FAIL } = Mocha.Runner.constants
 
 // This output very little info and is intended for CI runs
@@ -10,4 +10,4 @@ class TerseReporter {
   }
 }
 
-module.exports = TerseReporter
+export default TerseReporter

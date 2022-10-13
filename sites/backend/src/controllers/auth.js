@@ -100,8 +100,8 @@ AuthController.prototype.providerCallback = function (req, res) {
         go.get(conf.dataUri, headers(token))
           .then(async (result) => {
             if (provider === 'github') {
-              ;(email = await getGithubEmail(result.data.email, go, conf.emailUri, headers(token))),
-                (avatarUri = result.data.avatar_url)
+              email = await getGithubEmail(result.data.email, go, conf.emailUri, headers(token))
+              avatarUri = result.data.avatar_url
               username = result.data.login
             } else if (provider === 'google') {
               for (let address of result.data.emailAddresses) {

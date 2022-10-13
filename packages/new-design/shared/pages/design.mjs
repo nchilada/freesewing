@@ -6,7 +6,7 @@ import useApp from 'site/hooks/useApp.js'
 import WorkbenchWrapper from 'shared/components/wrappers/workbench.js'
 import Layout from 'site/components/layouts/lab'
 
-const WorkbenchPage = (props) => {
+const WorkbenchPage = () => {
   const app = useApp()
 
   return (

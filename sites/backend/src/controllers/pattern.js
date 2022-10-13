@@ -82,7 +82,7 @@ PatternController.prototype.deleteMultiple = function (req, res) {
       (err) => {
         if (err) return res.sendStatus(500)
         const patterns = {}
-        Patterns.find({ user: user.handle }, (err, patternList) => {
+        Pattern.find({ user: user.Handle }, (err, patternList) => {
           if (err) return res.sendStatus(400)
           for (let pattern of patternList) patterns[pattern.handle] = pattern
           res.send({ patterns })

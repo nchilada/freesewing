@@ -27,7 +27,6 @@ const getFiles = async (dir) => {
 }
 
 const doIt = async () => {
-  let files = []
   const shared = await getFiles('../../sites/shared')
   const lab = await getFiles('../../sites/lab/components')
   console.log(JSON.stringify([...shared, ...lab], null, 2))

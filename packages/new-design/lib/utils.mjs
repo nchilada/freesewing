@@ -253,12 +253,12 @@ const showTips = (config, choices) => {
 // Creates the environment based on the user's choices
 export const createEnvironment = async (choices) => {
   // Store directories for re-use
-  ;(config.cwd = cwd),
-    (config.source = {
-      root: cwd,
-      template: cwd + `/../templates/from-${choices.template}`,
-      shared: cwd + `/../shared`,
-    })
+  config.cwd = cwd
+  config.source = {
+    root: cwd,
+    template: cwd + `/../templates/from-${choices.template}`,
+    shared: cwd + `/../shared`,
+  }
   config.dest = join(process.cwd(), choices.name)
 
   // Create target directory
