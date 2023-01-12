@@ -20,6 +20,8 @@ const frontendFiles = [
   `**/pages/**/*.${jsSuffixes}`,
   `**/page-templates/**/*.${jsSuffixes}`,
   `packages/i18n/**/*.md/*.${jsSuffixes}`,
+  `sites/sanity/custom/*.${jsSuffixes}`,
+  `sites/sanity/plugins/**/*.${jsSuffixes}`,
 ]
 
 module.exports = {
