@@ -73,12 +73,18 @@ function titanBack({
   /*
    * Helper method to calculate the length of the cross seam
    */
-  const crossSeamDelta = () =>
-    new Path()
+  const crossSeamDelta = () => {
+    const actual = new Path()
       .move(points.waistIn)
       .line(points.crossSeamCurveStart)
       .curve(points.crossSeamCurveCp1, points.crossSeamCurveCp2, points.fork)
-      .length() - measurements.crossSeamBack
+      .length()
+    // TODO: Use relatively more ease for crossSeamBack than for crossSeamFront?
+    //       Unless those measurements were taken while sitting.
+    const target = measurements.crossSeamBack * (1 + options.crossSeamEase)
+    return actual - target
+  }
+
   /*
    * Helper method to (re)draw the cross seam
    */
@@ -524,6 +530,7 @@ export const back = {
     fitCrossSeamBack: true,
     fitGuides: true,
     // Fit
+    crossSeamEase: { pct: 1, min: 0, max: 10, menu: 'fit' },
     waistEase: { pct: 2, min: 0, max: 10, menu: 'fit' },
     seatEase: { pct: 2, min: 0, max: 10, menu: 'fit' },
     kneeEase: { pct: 6, min: 1, max: 25, menu: 'fit' },

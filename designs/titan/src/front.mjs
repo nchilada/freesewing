@@ -73,12 +73,18 @@ function titanFront({
   /*
    * Helper method to calculate the length of the crotch seam
    */
-  const crotchSeamDelta = () =>
-    new Path()
+  const crotchSeamDelta = () => {
+    const actual = new Path()
       .move(points.waistIn)
       .line(points.crotchSeamCurveStart)
       .curve(points.crotchSeamCurveCp2, points.crotchSeamCurveCp1, points.fork)
-      .length() - measurements.crossSeamFront
+      .length()
+    // TODO: Use relatively less ease for crossSeamFront than for crossSeamBack?
+    //       Unless those measurements were taken while sitting.
+    const target = measurements.crossSeamFront * (1 + options.crossSeamEase)
+    return actual - target
+  }
+
   /*
    * Helper method to (re)draw the crotch seam
    */
