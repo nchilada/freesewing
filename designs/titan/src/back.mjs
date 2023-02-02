@@ -157,13 +157,15 @@ function titanBack({
   points.seatOutCp1 = points.seatOut.shift(-90, points.seatOut.dy(points.knee) / 3)
   points.seatOutCp2 = points.seatOut.shift(90, points.seatOut.y / 2)
 
-  // Balance the waist
-  if (points.cbSeat.x < points.waistX.x) {
-    let delta = points.cbSeat.dx(points.waistX)
-    points.waistIn = points.waistX.shift(180, delta * (1 - options.waistBalance))
-  } else points.waistIn = points.waistX
-  let width = points.waistX.x
-  points.waistOut = points.waistIn.shift(180, width)
+  // Balance the waist.
+  // Widen it by the exact, absolute amount that the legs would be widened by
+  // if the same ratio were given for both waistBalance and legBalance. In other words,
+  // use kneeTotal as the basis for both waist balance and lega balance.
+  let absoluteWaistBalance = kneeTotal * (options.waistBalance - 0.5)
+  store.set('waistBalance', absoluteWaistBalance)
+  let halfWaistBalance = absoluteWaistBalance / 2
+  points.waistIn = points.waistX
+  points.waistOut = new Point(halfWaistBalance, 0)
 
   // Cross seam
   drawCrossSeam()
@@ -532,13 +534,13 @@ export const back = {
     fitKnee: { bool: false, menu: 'style' },
     // Advanced
     legBalance: { pct: 57.5, min: 52.5, max: 62.5, menu: 'advanced' },
+    waistBalance: { pct: 57.5, min: 52.5, max: 62.5, menu: 'advanced' },
     crossSeamCurveStart: { pct: 85, min: 60, max: 100, menu: 'advanced' },
     crossSeamCurveBend: { pct: 65, min: 45, max: 85, menu: 'advanced' },
     crossSeamCurveAngle: { deg: 12, min: 0, max: 20, menu: 'advanced' },
     crotchSeamCurveStart: { pct: 80, min: 60, max: 95, menu: 'advanced' },
     crotchSeamCurveBend: { pct: 80, min: 45, max: 100, menu: 'advanced' },
     crotchSeamCurveAngle: { deg: 25, min: 0, max: 35, menu: 'advanced' },
-    waistBalance: { pct: 60, min: 30, max: 90, menu: 'advanced' },
     grainlinePosition: { pct: 45, min: 30, max: 60, menu: 'advanced' },
     waistbandWidth: {
       pct: 3,

@@ -153,7 +153,6 @@ function titanFront({
       'crotchSeamCurveCp2',
       'crotchSeamCurveStart',
       'waistIn',
-      'cfWaist',
       'waistOut',
     ]
     rotate.push(out ? 'seatOut' : 'fork')
@@ -221,11 +220,9 @@ function titanFront({
   points.seatOutCp2 = points.seatOut.shift(-90, points.seatOut.dy(points.knee) / 3)
 
   // Balance the waist
-  let delta = points.waistX.dx(points.cfSeat)
-  let width = points.waistX.x
-  points.waistOut = new Point(delta * options.waistBalance, 0)
-  points.waistIn = points.waistOut.shift(0, width)
-  points.cfWaist = points.waistIn
+  let halfWaistBalance = store.get('waistBalance') / 2
+  points.waistIn = points.waistX
+  points.waistOut = new Point(halfWaistBalance, 0)
 
   // Draw initial crotch seam
   drawCrotchSeam()
@@ -235,7 +232,7 @@ function titanFront({
 
   if (options.fitCrossSeam && options.fitCrossSeamFront) {
     let delta = crotchSeamDelta()
-    let rotate = ['waistIn', 'waistOut', 'cfWaist']
+    let rotate = ['waistIn', 'waistOut']
     let run = 0
     do {
       run++
