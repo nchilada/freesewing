@@ -100,6 +100,7 @@ function titanBack({
     points.crossSeamCurveCp2 = points.fork
       .shiftFractionTowards(points.crossSeamCurveMax, options.crossSeamCurveBend)
       .rotate(options.crossSeamCurveAngle, points.fork)
+    points.forkCp2 = points.crossSeamCurveCp2.rotate(-90, points.fork)
   }
 
   // Let's get to work
@@ -181,7 +182,6 @@ function titanBack({
       for (const i of rotate) points[i] = points[i].rotate(delta / 15, points.seatOut)
       // Remedy B: Nudge the fork inwards/outwards
       points.fork = points.fork.shift(0, delta / 5)
-      points.forkCp2 = points.crossSeamCurveCp2.rotate(-90, points.fork)
       drawCrossSeam()
       delta = crossSeamDelta()
       // Uncomment the line beloe this to see all iterations
