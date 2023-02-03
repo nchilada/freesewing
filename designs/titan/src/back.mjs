@@ -136,6 +136,7 @@ function titanBack({
   points.grainlineBottom = points.floor
 
   // Figure out width at the knee
+  // The side seam can be shifted using the legBalance option.
   let kneeTotal = measurements.knee * (1 + options.kneeEase)
   if (!options.fitKnee) {
     // Based the knee width on the seat, unless that ends up being less
@@ -157,21 +158,37 @@ function titanBack({
   points.floorOut = points.floor.shift(0, halfKnee)
   points.floorIn = points.floorOut.flipX(points.floor)
 
+  // Balance the waist
+  if (points.cbSeat.x < points.waistX.x) {
+    let delta = points.cbSeat.dx(points.waistX)
+    points.waistIn = points.waistX.shift(180, delta * (1 - options.waistBalance))
+  } else points.waistIn = points.waistX
+  let width = points.waistX.x
+  points.waistOut = points.waistIn.shift(180, width)
+
+  // Shift the side seam at the waist using the waistBalance2 option.
+  // Widen it by the exact, absolute amount that the legs would be widened by
+  // if the same ratio were given for both waistBalance and legBalance. In other words,
+  // use kneeTotal as the basis for both waist balance and lega balance.
+  let absoluteWaistBalance = kneeTotal * (options.waistBalance2 - 0.5)
+  store.set('waistBalance', absoluteWaistBalance)
+  let halfWaistBalance = absoluteWaistBalance / 2
+  points.waistOut = points.waistOut.shift(0, halfWaistBalance)
+
+  // Shift the side seam at the seat.
+  // Where this points sits vertically, as a ratio, the waist and the knee
+  let seatHeight = points.seatY.y / points.knee.y
+  let seatBalance = seatHeight * options.legBalance + (1 - seatHeight) * options.waistBalance2
+  let absoluteSeatBalance = kneeTotal * (seatBalance - 0.5)
+  store.set('seatBalance', absoluteSeatBalance)
+  let halfSeatBalance = absoluteSeatBalance / 2
+  points.seatOut = points.seatOut.shift(0, halfSeatBalance)
+
   // Control points to shape the legs towards the seat
   points.kneeInCp1 = points.kneeIn.shift(90, points.fork.dy(points.knee) / 3)
   points.kneeOutCp2 = points.kneeOut.shift(90, points.fork.dy(points.knee) / 3)
   points.seatOutCp1 = points.seatOut.shift(-90, points.seatOut.dy(points.knee) / 3)
   points.seatOutCp2 = points.seatOut.shift(90, points.seatOut.y / 2)
-
-  // Balance the waist.
-  // Widen it by the exact, absolute amount that the legs would be widened by
-  // if the same ratio were given for both waistBalance and legBalance. In other words,
-  // use kneeTotal as the basis for both waist balance and lega balance.
-  let absoluteWaistBalance = kneeTotal * (options.waistBalance - 0.5)
-  store.set('waistBalance', absoluteWaistBalance)
-  let halfWaistBalance = absoluteWaistBalance / 2
-  points.waistIn = points.waistX
-  points.waistOut = new Point(halfWaistBalance, 0)
 
   // Cross seam
   drawCrossSeam()
@@ -541,7 +558,8 @@ export const back = {
     fitKnee: { bool: false, menu: 'style' },
     // Advanced
     legBalance: { pct: 57.5, min: 52.5, max: 62.5, menu: 'advanced' },
-    waistBalance: { pct: 57.5, min: 52.5, max: 62.5, menu: 'advanced' },
+    waistBalance: { pct: 60, min: 30, max: 90, menu: 'advanced' },
+    waistBalance2: { pct: 57.5, min: 52.5, max: 62.5, menu: 'advanced' },
     crossSeamCurveStart: { pct: 85, min: 60, max: 100, menu: 'advanced' },
     crossSeamCurveBend: { pct: 65, min: 45, max: 85, menu: 'advanced' },
     crossSeamCurveAngle: { deg: 12, min: 0, max: 20, menu: 'advanced' },

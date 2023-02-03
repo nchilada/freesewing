@@ -205,6 +205,7 @@ function titanFront({
   points.grainlineBottom = points.floor
 
   // Figure out width at the knee
+  // The side seam can be shifted using the legBalance option.
   let halfKnee = store.get('kneeFront') / 2
   points.kneeOut = points.knee.shift(180, halfKnee)
   points.kneeIn = points.kneeOut.flipX(points.knee)
@@ -216,6 +217,21 @@ function titanFront({
   points.floorOut = points.floor.shift(180, halfKnee)
   points.floorIn = points.floorOut.flipX(points.floor)
 
+  // Balance the waist
+  let delta = points.waistX.dx(points.cfSeat)
+  let width = points.waistX.x
+  points.waistOut = new Point(delta * options.waistBalance, 0)
+  points.waistIn = points.waistOut.shift(0, width)
+  points.cfWaist = points.waistIn
+
+  // Shift the side seam at the waist.
+  let halfWaistBalance = store.get('waistBalance') / 2
+  points.waistOut = points.waistOut.shift(0, halfWaistBalance)
+
+  // Shift the side seam at the seat.
+  let halfSeatBalance = store.get('seatBalance') / 2
+  points.seatOut = points.seatOut.shift(0, halfSeatBalance)
+
   // Control points to shape the legs towards the seat
   points.kneeInCp2 = points.kneeIn.shift(90, points.fork.dy(points.knee) / 3)
   points.kneeOutCp1 = points.kneeOut.shift(90, points.fork.dy(points.knee) / 3)
@@ -224,11 +240,6 @@ function titanFront({
     measurements.waistToHips * options.waistHeight + absoluteOptions.waistbandWidth
   )
   points.seatOutCp2 = points.seatOut.shift(-90, points.seatOut.dy(points.knee) / 3)
-
-  // Balance the waist
-  let halfWaistBalance = store.get('waistBalance') / 2
-  points.waistIn = points.waistX
-  points.waistOut = new Point(halfWaistBalance, 0)
 
   // Draw initial crotch seam
   drawCrotchSeam()
